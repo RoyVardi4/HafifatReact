@@ -12,7 +12,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import EventIconDate from '@material-ui/icons/Event';
 
-export default function AlertDialog(props) {
+export default function CourseDatesPopup(props) {
   return (
     <div>
       <Dialog
@@ -33,7 +33,7 @@ export default function AlertDialog(props) {
           >
             {
               props.course.dates.map((date) => {
-                return <ListItem button onClick={props.handleClose()}>
+                return <ListItem key={date} button onClick={props.handleClose()}>
                           <ListItemIcon>
                             <EventIconDate />
                           </ListItemIcon>

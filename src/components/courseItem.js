@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -9,6 +9,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DatesPopup from './courseDatesPopup';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import AddCourseDate from './addCourseDate';
+import EventIconDate from '@material-ui/icons/Event';
 
 const styles = makeStyles((theme) => ({
   titleData: {
@@ -31,12 +33,18 @@ const styles = makeStyles((theme) => ({
 export default function CourseItem(props) {
   const [isOpenPopup, setIsOpenPopup] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
+  const [isAddDatePopup, setIsAddDatePopup] = useState(false)
 
   const classes = styles();
 
   const handleClosePopup = () => (event) => {
     event.stopPropagation()
     setIsOpenPopup(false);
+  };
+
+  const handleCloseAddDatePopup = () => (event) => {
+    event.stopPropagation()
+    setIsAddDatePopup(false);
   };
 
   const moreDates = () => {
@@ -61,14 +69,31 @@ export default function CourseItem(props) {
                                        checked={isChecked}/>}
                     label={props.course.name}
                 />
-                <Typography className={classes.gmushData}>{props.course.gmush}/hours</Typography>
-                <Typography className={classes.dateData}>
+                <Typography className={classes.gmushData}>{props.course.gmush} hours</Typography>
+                {/* <Typography className={classes.dateData}>
                     {props.course.dates.filter((date, index) => index === 0) }
-                </Typography>  
+                </Typography> */}
+                
+                <FormControlLabel
+                    className={classes.dateData}
+                    onClick={(event) => event.stopPropagation()}
+                    control={
+                      <div>
+                        <Typography>
+                          {props.course.dates.filter((date, index) => index === 0) }
+                        </Typography>
+                        <EventIconDate onClick={() => setIsAddDatePopup(true)} />
+                      </div>
+                    }
+                />
+                <AddCourseDate open={isAddDatePopup}
+                               course={props.course}
+                               handleClose={handleCloseAddDatePopup}/>
 
-                <DatesPopup open={isOpenPopup}
-                            handleClose={handleClosePopup}
-                            course={props.course}/>
+                <DatesPopup 
+                    open={isOpenPopup}
+                    handleClose={handleClosePopup}
+                    course={props.course}/>
             </AccordionSummary>
 
             <Divider />

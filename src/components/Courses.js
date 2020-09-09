@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import CourseList from './CourseList'
 
 import { makeStyles } from '@material-ui/core/styles';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 import 'date-fns';
 import TextField from '@material-ui/core/TextField';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -23,13 +25,15 @@ import {
         },
     }))
 
+    
 export default function Courses() {
   const classes = useStyles();
 
   const [courseName, setCourseName] = useState("")
-  const [courseDate, setCourseDate] = useState()
+  const [courseDate, setCourseDate] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
   const [courseList, setCourseList] = useState([])
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
 
     useEffect(() => {
         fetch("https://api.mocki.io/v1/07bc5d06")
@@ -37,6 +41,21 @@ export default function Courses() {
                 .then(data => setCourseList(data))
                 .finally(() => setIsLoading(false))
     }, [])
+
+  const addCourse = (newCourse) => {
+    // Clear filters
+    setCourseName("")
+    setCourseDate(null)
+    
+    // Add to list
+    setCourseList(
+        [
+            ...courseList,
+            newCourse
+        ]
+    )
+    setIsSnackbarOpen(true)
+  }
 
   const handleDateChange = (date) => {
     setCourseDate(date);
@@ -52,6 +71,11 @@ export default function Courses() {
               </Grid>
               :
               <div>
+                <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={() => setIsSnackbarOpen(false)}>
+                    <Alert onClose={() => setIsSnackbarOpen(false)} severity="success">
+                        Your new course was added successfully!
+                    </Alert>
+                </Snackbar>
                 <Grid container
                         direction="row"
                         justify="center"
@@ -86,6 +110,7 @@ export default function Courses() {
                         justify="center"
                         alignItems="center">
                     <CourseList 
+                        addCourse={addCourse}
                         courseList={Array.from(courseList)}
                         filterCourseName={courseName}
                         filterCourseDate={courseDate}

@@ -88,7 +88,11 @@ export default function ControlledAccordions(props) {
   const handleClosePopup = () => (event) => {
     event.stopPropagation()
     setIsOpenPopup(false);
-  };
+  }
+
+  const handleAddCourse = (newCourse) => {
+    props.addCourse(newCourse)
+  }
 
   return (
     <div className={classes.root}>
@@ -105,8 +109,11 @@ export default function ControlledAccordions(props) {
               Add
               <AddIcon />
             </Fab>
-            <AddCoursePopup open={isOpenPopup}
-                            handleClose={handleClosePopup}/>
+            <AddCoursePopup
+                courseList={props.courseList}
+                handleAddCourse={handleAddCourse}
+                open={isOpenPopup}
+                handleClose={handleClosePopup}/>
           </Grid>
         </Grid>
         :
