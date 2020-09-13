@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useMyCart, useMyCartRemove } from '../Context/myCartContext'
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
@@ -37,17 +38,33 @@ export default function CourseItem(props) {
   const [isChecked, setIsChecked] = useState(false)
   const [isAddDatePopup, setIsAddDatePopup] = useState(false)
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState("")
 
   const classes = styles();
 
-  const handleClosePopup = () => (event) => {
-    setIsOpenPopup(false);
+  const cartList = useMyCart()
+  const removeFromCartList = useMyCartRemove()
+
+  useEffect(() => {
+    if(cartList.filter((cartItem) => cartItem.name === props.course.name).length === 0) {
+      setIsChecked(false)
+    }
+  }, [cartList, props.course.name])
+
+  const handleClosePopup = () => (isToCheck) => {
+    setIsChecked(isToCheck)
+    setIsOpenPopup(false)
+    if(isToCheck) {
+      setSnackbarMessage("Great! you have chosen a date");
+      setIsSnackbarOpen(true)
+    }
   };
 
   const handleCloseAddDatePopup = (newDate) => () => {
     // Check if is not null
     if(newDate){
       props.course.dates.push(newDate)
+      setSnackbarMessage("Successfully added new date")
       setIsSnackbarOpen(true)
     }
     setIsAddDatePopup(false);
@@ -57,8 +74,18 @@ export default function CourseItem(props) {
     // Open dates popup only if checked
     if(!isChecked){
         setIsOpenPopup(true)
-    } 
+    } else {
+      const removeFromCart = {
+        name: props.course.name
+      }
+      removeFromCartList(removeFromCart)
+    }
     setIsChecked(!isChecked)
+  }
+
+  const closeSnackbar = (event) => {
+    event.stopPropagation()
+    setIsSnackbarOpen(false)
   }
 
   return (
@@ -92,9 +119,9 @@ export default function CourseItem(props) {
                     handleClose={handleClosePopup}
                     course={props.course}/>
 
-                <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={() => setIsSnackbarOpen(false)}>
-                    <Alert onClose={() => setIsSnackbarOpen(false)} severity="success">
-                        Successfully added new date
+                <Snackbar open={isSnackbarOpen} autoHideDuration={4000} onClose={() => setIsSnackbarOpen(false)}>
+                    <Alert onClose={closeSnackbar} severity="success">
+                        {snackbarMessage}
                     </Alert>
                 </Snackbar>
             </AccordionSummary>

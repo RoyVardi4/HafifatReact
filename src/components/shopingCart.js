@@ -4,6 +4,8 @@ import SpeedDial from '@material-ui/lab/SpeedDial';
 import SpeedDialIcon from '@material-ui/lab/SpeedDialIcon';
 import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import MyShopping from './myShopping'
 
 const useStyles = makeStyles((theme) => ({
@@ -31,18 +33,17 @@ export default function ShoppingCart() {
     const [isOpenShoppingCart, setisOpenShoppingCart] = useState(false)
     
     const actions = [
-      { 
-        icon: <ShoppingCartIcon />, 
-        name: 'Shopping cart',
-        execute: () => {
-            setisOpenShoppingCart(true)
-        }
-     },
+        { 
+            icon: <ShoppingCartIcon />, 
+            name: 'Shopping cart',
+            execute: () => setisOpenShoppingCart(true)
+        },
     ];
 
-  const handleCloseMyShopping = () => {
+  const handleCloseMyShopping = () => () => {
       setisOpenShoppingCart(false)
   }
+
 
   const handleClose = () => {
     setOpen(false);
@@ -55,28 +56,31 @@ export default function ShoppingCart() {
   return (
     <div className={classes.root}>
       <div className={classes.exampleWrapper}>
-        <SpeedDial
+
+
+      <SpeedDial
           FabProps={{color:"secondary"}}
           ariaLabel="SpeedDial example"
           className={classes.speedDial}
-          icon={<SpeedDialIcon/>}
+          icon={open ? <ExpandLessIcon /> : <ExpandMoreIcon />}
           onClose={handleClose}
           onOpen={handleOpen}
           open={open}
-          direction="down"
+          direction={'down'}
         >
           {actions.map((action) => (
             <SpeedDialAction
               key={action.name}
               icon={action.icon}
               tooltipTitle={action.name}
-              onClick={() => console.log("Open My Shopping")}
+              onClick={action.execute}
             />
           ))}
-          {/* <MyShopping open={isOpenShoppingCart}
-                      handleClose={handleCloseMyShopping}/> */}
         </SpeedDial>
+        <MyShopping open={isOpenShoppingCart}
+                    handleClose={handleCloseMyShopping}/>
       </div>
     </div>
   );
 }
+

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useMyCartUpdate } from '../Context/myCartContext'
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -13,12 +14,38 @@ import ListItemText from '@material-ui/core/ListItemText';
 import EventIconDate from '@material-ui/icons/Event';
 
 export default function CourseDatesPopup(props) {
+
+  const updateMyShoppingCart = useMyCartUpdate()
+
+  const closeDialog = props.handleClose()
+
+  const addCourseToCart = (event, date) => {
+    event.stopPropagation()
+    const course = {
+      name: props.course.name,
+      selectedDate: date
+    }
+
+    // Update global context
+    updateMyShoppingCart(course)    
+
+    // Close with "check" flag
+    closeDialog(true)
+    
+  }
+  
+  const cancelAndExit = (event) => {
+    // Close with "check" flag
+    closeDialog(false)
+    event.stopPropagation()
+  }
+
   return (
     <div>
       <Dialog
         fullWidth
         open={props.open}
-        onClose={props.handleClose()}
+        onClose={cancelAndExit}
       >
         <DialogTitle align="center">Choose date for {props.course.name} course</DialogTitle>
         <Divider />
@@ -33,7 +60,7 @@ export default function CourseDatesPopup(props) {
           >
             {
               props.course.dates.map((date) => {
-                return <ListItem key={date} button onClick={props.handleClose()}>
+                return <ListItem key={date} button onClick={(event) => addCourseToCart(event, date)}>
                           <ListItemIcon>
                             <EventIconDate />
                           </ListItemIcon>
@@ -44,7 +71,7 @@ export default function CourseDatesPopup(props) {
           </List>
         </DialogContent>
         <DialogActions>
-          <Button variant="outlined" onClick={props.handleClose()} color="primary">
+          <Button variant="outlined" onClick={cancelAndExit} color="primary">
             Cancel
           </Button>
         </DialogActions>
