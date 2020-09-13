@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 
 import CourseList from './CourseList'
+import ShopingCart from './shopingCart'
 
 import { makeStyles } from '@material-ui/core/styles';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -71,11 +72,14 @@ export default function Courses() {
               </Grid>
               :
               <div>
+                <ShopingCart/>
+                
                 <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={() => setIsSnackbarOpen(false)}>
                     <Alert onClose={() => setIsSnackbarOpen(false)} severity="success">
                         Your new course was added successfully!
                     </Alert>
                 </Snackbar>
+
                 <Grid container
                         direction="row"
                         justify="center"

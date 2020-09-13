@@ -11,6 +11,8 @@ import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import AddCourseDate from './addCourseDate';
 import EventIconDate from '@material-ui/icons/Event';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 const styles = makeStyles((theme) => ({
   titleData: {
@@ -34,18 +36,22 @@ export default function CourseItem(props) {
   const [isOpenPopup, setIsOpenPopup] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
   const [isAddDatePopup, setIsAddDatePopup] = useState(false)
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
 
   const classes = styles();
 
   const handleClosePopup = () => (event) => {
-    event.stopPropagation()
     setIsOpenPopup(false);
   };
 
-  const handleCloseAddDatePopup = () => (event) => {
-    event.stopPropagation()
+  const handleCloseAddDatePopup = (newDate) => () => {
+    // Check if is not null
+    if(newDate){
+      props.course.dates.push(newDate)
+      setIsSnackbarOpen(true)
+    }
     setIsAddDatePopup(false);
-  };
+  }
 
   const moreDates = () => {
     // Open dates popup only if checked
@@ -70,30 +76,27 @@ export default function CourseItem(props) {
                     label={props.course.name}
                 />
                 <Typography className={classes.gmushData}>{props.course.gmush} hours</Typography>
-                {/* <Typography className={classes.dateData}>
+                <Typography className={classes.dateData}>
                     {props.course.dates.filter((date, index) => index === 0) }
-                </Typography> */}
+                </Typography>
+                <Typography onClick={(event) => event.stopPropagation()}>
+                  <EventIconDate color="secondary" onClick={() => setIsAddDatePopup(true)} />
+                  <AddCourseDate open={isAddDatePopup}
+                                course={props.course}
+                                handleClose={handleCloseAddDatePopup}/>
+                </Typography>
                 
-                <FormControlLabel
-                    className={classes.dateData}
-                    onClick={(event) => event.stopPropagation()}
-                    control={
-                      <div>
-                        <Typography>
-                          {props.course.dates.filter((date, index) => index === 0) }
-                        </Typography>
-                        <EventIconDate onClick={() => setIsAddDatePopup(true)} />
-                      </div>
-                    }
-                />
-                <AddCourseDate open={isAddDatePopup}
-                               course={props.course}
-                               handleClose={handleCloseAddDatePopup}/>
 
                 <DatesPopup 
                     open={isOpenPopup}
                     handleClose={handleClosePopup}
                     course={props.course}/>
+
+                <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={() => setIsSnackbarOpen(false)}>
+                    <Alert onClose={() => setIsSnackbarOpen(false)} severity="success">
+                        Successfully added new date
+                    </Alert>
+                </Snackbar>
             </AccordionSummary>
 
             <Divider />
@@ -101,6 +104,7 @@ export default function CourseItem(props) {
             <AccordionDetails>
                 <Typography>{props.course.description}</Typography>
             </AccordionDetails>
+
         </Accordion>
   );
 }

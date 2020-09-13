@@ -9,7 +9,6 @@ import { green } from '@material-ui/core/colors';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
-
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
@@ -68,11 +67,9 @@ export default class AddCoursePopup extends Component {
         this.props.handleAddCourse(newCourse)
         this.props.handleClose()
       } else {
-        console.log("before: " + this.state.isSnackbarOpen)
         this.setState({
           isSnackbarOpen : true
         })
-        console.log("after: " + this.state.isSnackbarOpen)
       }
       
       // End cirular loading
