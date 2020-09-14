@@ -63,7 +63,7 @@ export default function Courses() {
   };
 
   return (
-      <div>
+      <div style={{marginTop:"3%"}}>
           {
               isLoading 
               ?

@@ -1,22 +1,23 @@
 import React from 'react';
-
+import {BrowserRouter} from 'react-router-dom'
 import { MyCartProvider } from './Context/myCartContext'
 
 // Components 
-import Courses from './components/Courses'
+import Navbar from './components/navbar'
 
 function App() {
   return (
     <MyCartProvider>
-      <div style={{backgroundColor: "#F5F5F5"}}>
-        <h1 align="center">מערכת לרישום קורסים</h1>
-        <Courses />
-        <h3 align="center" style={{paddingTop:"260px",
-                                  paddingBottom:"20px",
-                                  color:"grey"}}
-        >@RoyVardi כל הזכויות שמורות ל
-        </h3>
-      </div>
+      <BrowserRouter>
+        <div style={{backgroundColor: "#F5F5F5"}}>
+          <Navbar />
+          <h3 align="center" style={{paddingTop:"36%",
+                                    paddingBottom:"20px",
+                                    color:"grey"}}
+          >@RoyVardi כל הזכויות שמורות ל
+          </h3>
+        </div>
+      </BrowserRouter>
     </MyCartProvider>
   );
 }

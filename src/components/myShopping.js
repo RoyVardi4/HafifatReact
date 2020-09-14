@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import List from '@material-ui/core/List';
@@ -18,11 +17,17 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import { green, blue } from '@material-ui/core/colors';
 import CheckIcon from '@material-ui/icons/Check';
 import Fab from '@material-ui/core/Fab';
-import SaveIcon from '@material-ui/icons/Save';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import Grow from '@material-ui/core/Grow';
 
-import { useMyCart, useMyCartRemove } from '../Context/myCartContext'
+import { useMyCart, useMyCartRemove, useMyCartRemoveAll } from '../Context/myCartContext'
 
 const useStyles = makeStyles((theme) => ({
+    listItem: {
+        '&:hover': {
+            backgroundColor: "#DCDCDC",
+          },  
+    },
     buttonProgress: {
         color: blue[700],
         position: 'absolute',
@@ -36,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
         '&:hover': {
           backgroundColor: green[700],
         },
-        margin:"5%"
+        margin: theme.spacing(5)
       },
 }));
 
@@ -48,6 +53,8 @@ export default function ShoppingCart(props) {
     
     const cartList = useMyCart()
     const removeFromCartList = useMyCartRemove()
+    const removeAllFromCart = useMyCartRemoveAll()
+    const closeDialog = props.handleClose()
 
     const removeFromList = (courseToRemove) => {
         removeFromCartList(courseToRemove)
@@ -57,49 +64,65 @@ export default function ShoppingCart(props) {
         setIsButNowLoading(true)
         setTimeout(() => {
             setSuccess(true)
-            setIsButNowLoading(true)
-        }, 2000)
+            
+            // Remove all courses from list
+            setTimeout(() => {
+                removeAllFromCart()
+            }, 500*cartList.length)
+
+            setIsButNowLoading(false)
+        }, 1000)
+    }
+
+    const exitDialog = () => {
+        closeDialog()
+        setTimeout(() => {
+            // Reset success button 
+            setSuccess(false)
+        }, 1000)
     }
 
   return (
-    <div >
+      <div >
         <Dialog
             fullWidth
             open={props.open}
-            onClose={props.handleClose()}
+            onClose={exitDialog}
         >
             <DialogTitle align="center">My Shopping list</DialogTitle>
 
         {
-            cartList.length === 0 ? 
+            cartList.length === 0 && !isSuccess ? 
             <h4 align="center">You haven't picked courses yet</h4> :
             <div>
                 <DialogContent>
                     <List
                         component="nav"
                     >
-                        {cartList.map((courseItem) => {
-                            return <div>
-                                        <ListItem key={courseItem.name} >
-                                            <ListItemIcon>
-                                                <IconButton onClick={() => removeFromList(courseItem)}>
-                                                    <DeleteIcon color="error"/>
-                                                </IconButton>
-                                            </ListItemIcon>
-                                            <ListItemText primary={courseItem.name}/>
-                                            <ListItemSecondaryAction>
-                                                <ListItemText primary={courseItem.selectedDate}/>
-                                            </ListItemSecondaryAction>
-                                        </ListItem>
-                                        <Divider light/>
-                                    </div>
+                        {cartList.map((courseItem, index) => {
+                            return <Grow in={!isSuccess} timeout={500*(index+1)} key={courseItem.name}>
+                                        <div>
+                                            <ListItem className={classes.listItem} >
+                                                <ListItemIcon>
+                                                    <IconButton onClick={() => removeFromList(courseItem)}>
+                                                        <DeleteIcon color="error"/>
+                                                    </IconButton>
+                                                </ListItemIcon>
+                                                <ListItemText primary={courseItem.name}/>
+                                                <ListItemSecondaryAction>
+                                                    <ListItemText primary={courseItem.selectedDate}/>
+                                                </ListItemSecondaryAction>
+                                            </ListItem>
+                                            <Divider light/>
+                                        </div>
+                                    </Grow>
                         })}
                     </List>
                 </DialogContent>
                 <Grid container justify="center">
                     {
                         isSuccess ?
-                        <Fab className={classes.buttonSuccess} color="primary">
+                        <Fab onClick={exitDialog} className={classes.buttonSuccess} color="primary">
                             <CheckIcon />
                         </Fab>
                         :
@@ -108,6 +131,7 @@ export default function ShoppingCart(props) {
                                 onClick={clickedBuyNow}
                                 color="primary"
                                 disabled={isBuyNowLoading}
+                                endIcon={<AttachMoneyIcon />}
                         >
                             Buy now
                             {isBuyNowLoading && <CircularProgress className={classes.buttonProgress} size={24} />}
