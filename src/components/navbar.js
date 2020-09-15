@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import { Link, Route, Switch, Redirect } from 'react-router-dom'
+import React, { useState, useEffect} from 'react';
+import { Link, Route, Switch, Redirect, useLocation } from 'react-router-dom'
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { makeStyles } from '@material-ui/core/styles';
@@ -10,9 +10,14 @@ import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import { grey } from '@material-ui/core/colors';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import SignOutIcon from '@material-ui/icons/MeetingRoom';
+
+// Context 
+import {useMyProfile} from '../Context/myProfileContext'
 
 // Components
 import Courses from './Courses'
+import ThatMe from '../Views/thatsMe'
 import Login from './logIn'
 
 const useStyles = makeStyles((theme) => ({
@@ -41,7 +46,28 @@ export default function Navbar() {
   const classes = useStyles()
   
   const [logInPopup, setLogInPopup] = useState(false) 
-  const [value, setValue] = useState(null);
+  const [value, setValue] = useState();
+  const location = useLocation()
+  const profile = useMyProfile()
+
+  useEffect(() => {
+    switch(location.pathname) {
+      case '/register' :
+        setValue(0)
+        break
+      case '/profile' :
+        setValue(1)
+        break
+      case '/coursesDone' :
+        setValue(2)
+        break
+      case '/Home' :
+        setValue(null)
+        break
+      default:
+
+    }
+  }, [location])
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -76,11 +102,16 @@ export default function Navbar() {
             </Tabs>
             <IconButton className={classes.login} 
                         color="inherit"
-                        onClick={() => setLogInPopup(true)}
+                        size="small"
             >
-              <AccountCircleIcon/>
-              <Login open={logInPopup} handleClose={() => closeLogIn}/>
+              {typeof profile === 'undefined' 
+              ?
+              <AccountCircleIcon onClick={() => setLogInPopup(true)}/>
+              :
+              <SignOutIcon onClick={() => alert("Sign out!")}/>
+              }
             </IconButton>
+            <Login open={logInPopup} handleClose={() => closeLogIn}/>
         </Toolbar>
       </AppBar>
       
@@ -90,6 +121,7 @@ export default function Navbar() {
         </Route>
         <Route path="/Home" component={tempHomePage} />
         <Route path="/register" component={Courses} />
+        <Route path="/profile" component={ThatMe} />
       </Switch>
     </div>
   );
