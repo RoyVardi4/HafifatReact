@@ -27,8 +27,13 @@ export default function Login(props) {
   const classes = useStyles()
 
   const changeProfile = useMyProfileChange()
-  const [personalNumber, setPersonalNumber] = useState()
   const [isLoading, setIsLoading] = useState(false)
+  const [input, setInput] = useState({})
+
+  const handleInputChange = (e) => setInput({
+    ...input,
+    [e.currentTarget.name]: e.currentTarget.value
+  })
 
   const closeLogIn = (event) => {
     if(event) event.stopPropagation()
@@ -36,26 +41,20 @@ export default function Login(props) {
     close() 
   }
 
-  const handleChange = (event) => {
-      const {value} = event.target
-      setPersonalNumber(value)
-  }
-
   const login = async(event) => {
     setIsLoading(true)
     await fetch("https://api.mocki.io/v1/c3b8d833")
             .then(res => res.json())
             .then(data => {
-              const user = data.find((u) => u.personalNum === personalNumber)
+              const user = data.find((u) => u.personalNum === input.personalNumber)
+              setIsLoading(false)
               if(user) {
                 changeProfile(user)
-                setIsLoading(false)
                 closeLogIn()    
               } else {
-                // TODO: add error message
+                alert("personal number does not exist")
               }
             })
-    
   }
 
   return (
@@ -73,14 +72,15 @@ export default function Login(props) {
               direction="row"
               alignItems='center'
               justify="center">
-            <TextField type="text"
-                    name="name"
-                    onChange={handleChange} 
-                    style={{align: "center"}}
-                    label="Presonal number"
-                    variant="outlined" 
-                    value={personalNumber}
-            />
+                <form>
+                  <TextField type="text"
+                             name="personalNumber"
+                             onChange={handleInputChange} 
+                             style={{align: "center"}}
+                             label="Presonal number"
+                             variant="outlined" 
+                  />
+                </form>
           </Grid>
           <Grid container
                 direction="row"
@@ -93,7 +93,7 @@ export default function Login(props) {
                       onClick={login}
                       disabled={isLoading}
               >
-                {isLoading ? <CircularProgress size={24} /> : <>Loading</>}
+                {isLoading ? <CircularProgress size={24} /> : <>Login</>}
               </Button>
           </Grid>
         </DialogContent>

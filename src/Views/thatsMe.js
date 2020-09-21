@@ -1,7 +1,6 @@
 import React, { useState} from 'react';
 import {useMyProfile} from '../Context/myProfileContext'
 
-// import { makeStyles } from '@material-ui/core/styles'
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
 import Fab from '@material-ui/core/Fab';
@@ -13,54 +12,42 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { IconButton } from '@material-ui/core';
 import GolfCourseIcon from '@material-ui/icons/GolfCourse';
+import { Link } from 'react-router-dom'
 
 // Components
-import Login from '../components/logIn'
+import PleaseLogin from '../components/pleaseLogin'
 
-// const useStyles = makeStyles((theme) => ({
-  
-// }))
 
 export default function ThatsMe() {
-//   const classes = useStyles()
 
   const profile = useMyProfile()
-  const [openLogin, setOpenLogin] = useState(false)
 
-  const handleClosePopup = () => () => {
-    setOpenLogin(false)
+  const getRandomColor = () => {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
+  
 
   return (
       <div>
           { 
             typeof profile === 'undefined' ?
-                <Grid container
-                      direction="row"
-                      alignItems='center'
-                      justify="center">
-                    <Grid item style={{marginBottom: "15%", marginTop: "15%"}}>
-                        <h4 style={{color:"grey"}}>Please Login</h4>
-                        <Fab onClick={() => setOpenLogin(true)} color="secondary" variant="extended">
-                            Login
-                            <LoginIcon />
-                        </Fab>
-                        <Login
-                            open={openLogin}
-                            handleClose={handleClosePopup}/>
-                    </Grid>
-                </Grid>
+            <PleaseLogin />
             :
             <Grid container
                   direction="row"
                   alignItems='center'
                   justify="center">
                 <Grid item>
-                    <Card style={{marginTop:"30%", marginBottom:"80%", minWidth: 250, minHeight: 200}}>
+                    <Card style={{marginTop:"30%", marginBottom:"40%", minWidth: 450, minHeight: 250}}>
                         <CardHeader title={profile.name} 
                                     subheader={profile.birthday}
                                     avatar={
-                                    <Avatar style={{backgroundColor: "red"}}>
+                                    <Avatar style={{backgroundColor: `${getRandomColor()}`}}>
                                         {profile.name.split(' ')[0][0] + profile.name.split(' ')[1][0]}
                                     </Avatar>
                                     }
@@ -78,14 +65,13 @@ export default function ThatsMe() {
                         </CardContent>
 
                         <CardActions>
-                            <IconButton>
+                            <IconButton to="/coursesDone" component={Link}>
                                 <GolfCourseIcon/>
                             </IconButton>
                         </CardActions>
                     </Card>
                 </Grid>
             </Grid>
-
           }
       </div>
   );

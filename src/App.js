@@ -15,8 +15,8 @@ function App() {
         <BrowserRouter>
           <div style={{backgroundColor: "#F5F5F5"}}>
             <Navbar />
-            <h4 align="center" style={{
-                                      color:"grey"}}
+            <h4 align="center" style={{ marginTop: "18%",
+                                        color:"grey"}}
             >@RoyVardi כל הזכויות שמורות ל
             </h4>
           </div>

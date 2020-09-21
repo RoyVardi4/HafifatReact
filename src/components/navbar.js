@@ -6,16 +6,20 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton'
+import Button from '@material-ui/core/Button'
 import MenuIcon from '@material-ui/icons/Menu';
 import Toolbar from '@material-ui/core/Toolbar';
 import { grey } from '@material-ui/core/colors';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import SignOutIcon from '@material-ui/icons/MeetingRoom';
+import Snackbar from '@material-ui/core/Snackbar';
+import Alert from '@material-ui/lab/Alert';
 
 // Context 
-import {useMyProfile} from '../Context/myProfileContext'
+import { useMyProfile, useMyProfileChange } from '../Context/myProfileContext' 
 
 // Components
+import CoursesDone from '../Views/coursesDone'
 import Courses from './Courses'
 import ThatMe from '../Views/thatsMe'
 import Login from './logIn'
@@ -30,25 +34,23 @@ const useStyles = makeStyles((theme) => ({
   },
   tabs: {
     flexGrow: 0.3,
+    marginRight: theme.spacing(15)
   },
   login: {
     flexGrow: 0.1,
-    marginLeft: theme.spacing(25)
   },
 }));
 
-
-function tempHomePage() {
-  return <h1 align="center">Home Page</h1>
-}
 
 export default function Navbar() {
   const classes = useStyles()
   
   const [logInPopup, setLogInPopup] = useState(false) 
-  const [value, setValue] = useState();
+  const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
+  const [value, setValue] = useState(0);
   const location = useLocation()
   const profile = useMyProfile()
+  const changeProfile = useMyProfileChange()
 
   useEffect(() => {
     switch(location.pathname) {
@@ -61,9 +63,6 @@ export default function Navbar() {
       case '/coursesDone' :
         setValue(2)
         break
-      case '/Home' :
-        setValue(null)
-        break
       default:
 
     }
@@ -74,12 +73,25 @@ export default function Navbar() {
   }
 
   const closeLogIn = () => {
-    setLogInPopup(false)
+    setLogInPopup(false) 
+  }
+
+  const signOut = () => {
+    // set profile to null
+    changeProfile()
+    setIsSnackbarOpen(true)
   }
 
   return (
     <div className={classes.root}>
-       <AppBar position="sticky" color="primary">      
+       <AppBar position="sticky" color="primary">    
+          
+          <Snackbar open={isSnackbarOpen} autoHideDuration={6000} onClose={() => setIsSnackbarOpen(false)}>
+              <Alert onClose={() => setIsSnackbarOpen(false)} severity="success">
+                You logged out
+              </Alert>
+          </Snackbar>  
+         
          <Toolbar>
              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
                  <MenuIcon />
@@ -100,28 +112,36 @@ export default function Navbar() {
                 <Tab to="/profile" label="That's ME" component={Link}/>
                 <Tab to="/coursesDone" label="courses done" component={Link}/>
             </Tabs>
-            <IconButton className={classes.login} 
-                        color="inherit"
-                        size="small"
-            >
-              {typeof profile === 'undefined' 
-              ?
-              <AccountCircleIcon onClick={() => setLogInPopup(true)}/>
+            {
+              typeof profile === 'undefined' ? 
+              <IconButton className={classes.login} 
+                          color="inherit"
+                          size="small"
+                          onClick={() => setLogInPopup(true) }
+              >
+                <AccountCircleIcon />
+              </IconButton>
               :
-              <SignOutIcon onClick={() => alert("Sign out!")}/>
-              }
-            </IconButton>
+              <Button className={classes.login}
+                      style={{textTransform: "none"}}
+                      color="inherit"
+                      onClick={signOut}
+                      endIcon={<SignOutIcon />}
+              >
+                Hello, {profile.name}
+              </Button>
+            }
             <Login open={logInPopup} handleClose={() => closeLogIn}/>
         </Toolbar>
       </AppBar>
       
       <Switch>
         <Route exact path="/">
-          <Redirect to="/Home"/>
+          <Redirect to="/register"/>
         </Route>
-        <Route path="/Home" component={tempHomePage} />
         <Route path="/register" component={Courses} />
         <Route path="/profile" component={ThatMe} />
+        <Route path="/coursesDone" component={CoursesDone} />        
       </Switch>
     </div>
   );

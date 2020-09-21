@@ -5,6 +5,7 @@ import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
 import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import RemoveShoppingCartIcon from '@material-ui/icons/RemoveShoppingCart'
 import MyShopping from './myShopping'
 
 const useStyles = makeStyles((theme) => ({
@@ -36,6 +37,11 @@ export default function ShoppingCart() {
             icon: <ShoppingCartIcon />, 
             name: 'Shopping cart',
             execute: () => setisOpenShoppingCart(true)
+        },
+        { 
+            icon: <RemoveShoppingCartIcon />, 
+            name: 'Remove all from Shopping cart',
+            execute: () => alert("Removed")
         },
     ];
 
