@@ -1,10 +1,8 @@
-import React, { useState} from 'react';
+import React from 'react';
 import {useMyProfile} from '../Context/myProfileContext'
 
 import Avatar from '@material-ui/core/Avatar';
 import Grid from '@material-ui/core/Grid';
-import Fab from '@material-ui/core/Fab';
-import LoginIcon from '@material-ui/icons/ExitToApp';
 import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardActions from '@material-ui/core/CardActions';

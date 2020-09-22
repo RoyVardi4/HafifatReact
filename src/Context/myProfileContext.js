@@ -13,38 +13,17 @@ export function useMyProfileChange() {
 }
 
 export function MyProfileProvider({ children }) {
-    const [myProfile, setMyProfile] = useState(
-        // {
-        //     name: "Roy Vardi"
-        // }
-    )
+    const [myProfile, setMyProfile] = useState()
 
     // Change Profile
     function chnageMyProfile(newUser) {
         setMyProfile(newUser)
     }
 
-    // // Remove one
-    // function removeFromMyCart(courseToRemove) {
-    //     const newList = myCart.filter((course) => {
-    //                     return course.name !== courseToRemove.name
-    //                 })
-    //     setMyCart([ ...newList ])
-    // }
-
-    // // Remove all
-    // function removeAllFromMyCart() {
-    //     setMyCart([])
-    // }
-
     return (
         <MyProfileContext.Provider value={myProfile}>
             <MyProfileUpdateContext.Provider value={chnageMyProfile}>
-                {/* <MyCartRemoveContext.Provider value={removeFromMyCart}>
-                    <MyCartRemoveAllContext.Provider value={removeAllFromMyCart}> */}
-                        {children}
-                    {/* </MyCartRemoveAllContext.Provider>
-                </MyCartRemoveContext.Provider> */}
+                {children}
             </MyProfileUpdateContext.Provider>
         </MyProfileContext.Provider>
     )

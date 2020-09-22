@@ -46,11 +46,11 @@ export default function Login(props) {
     await fetch("https://api.mocki.io/v1/c3b8d833")
             .then(res => res.json())
             .then(data => {
-              const user = data.find((u) => u.personalNum === input.personalNumber)
               setIsLoading(false)
+              const user = data.find((u) => u.personalNum === input.personalNumber)
               if(user) {
-                changeProfile(user)
                 closeLogIn()    
+                changeProfile(user)
               } else {
                 alert("personal number does not exist")
               }

@@ -20,7 +20,9 @@ import Fab from '@material-ui/core/Fab';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import Grow from '@material-ui/core/Grow';
 
+// Context
 import { useMyCart, useMyCartRemove, useMyCartRemoveAll } from '../Context/myCartContext'
+import { useMyProfile, useMyProfileChange } from '../Context/myProfileContext'
 
 const useStyles = makeStyles((theme) => ({
     listItem: {
@@ -51,19 +53,35 @@ export default function ShoppingCart(props) {
   const [isBuyNowLoading, setIsButNowLoading] = useState(false)
   const [isSuccess, setSuccess] = useState(false)
     
-    const cartList = useMyCart()
-    const removeFromCartList = useMyCartRemove()
-    const removeAllFromCart = useMyCartRemoveAll()
-    const closeDialog = props.handleClose()
+  const cartList = useMyCart()
+  const removeFromCartList = useMyCartRemove()
+  const removeAllFromCart = useMyCartRemoveAll()
+  
+  const myProfile = useMyProfile()
+  const changeMyProfile = useMyProfileChange()
+  
+  const closeDialog = props.handleClose()
 
     const removeFromList = (courseToRemove) => {
         removeFromCartList(courseToRemove)
+    }
+
+    const addCartToProfile = () => {
+        const newCourseList = myProfile.courses ? 
+                                [...myProfile.courses, ...cartList] : 
+                                cartList  
+        const newProfile = {
+            ...myProfile,
+            courses: newCourseList
+        }
+        changeMyProfile(newProfile)
     }
 
     const clickedBuyNow = () => {
         setIsButNowLoading(true)
         setTimeout(() => {
             setSuccess(true)
+            addCartToProfile()
             
             // Remove all courses from list
             setTimeout(() => {
