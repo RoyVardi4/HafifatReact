@@ -64,7 +64,7 @@ export default function ControlledAccordions(props) {
         return course.name.toLowerCase().includes(props.filterCourseName.toLowerCase())  &&
               filterByDates(course.dates)
         ?
-        <CourseItem key={course.name}
+        <CourseItem key={course._id}
                     course={course}
                     expanded={expanded}
                     expandChange={handleChange}

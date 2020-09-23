@@ -41,7 +41,7 @@ export default function ThatsMe() {
                   alignItems='center'
                   justify="center">
                 <Grid item>
-                    <Card style={{marginTop:"30%", marginBottom:"40%", minWidth: 450, minHeight: 250}}>
+                    <Card style={{marginTop:"30%", minWidth: 450, minHeight: 250}}>
                         <CardHeader title={profile.name} 
                                     subheader={profile.birthday}
                                     avatar={

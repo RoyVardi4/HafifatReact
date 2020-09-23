@@ -15,6 +15,8 @@ import EventIconDate from '@material-ui/icons/Event';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
 
+import CoursesServerAPI from '../ServerAPI/courseServerAPI'
+
 const styles = makeStyles((theme) => ({
   titleData: {
     fontSize: theme.typography.pxToRem(20),
@@ -63,6 +65,9 @@ export default function CourseItem(props) {
   const handleCloseAddDatePopup = (newDate) => () => {
     // Check if is not null
     if(newDate){
+      // Save to db
+      CoursesServerAPI.addCourseDate(newDate, props.course._id)
+
       props.course.dates.push(newDate)
       setSnackbarMessage("Successfully added new date")
       setIsSnackbarOpen(true)

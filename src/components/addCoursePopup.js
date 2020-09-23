@@ -13,6 +13,8 @@ import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import { MuiPickersUtilsProvider, KeyboardDatePicker} from '@material-ui/pickers';
 
+import CoursesServerAPI from '../ServerAPI/courseServerAPI'
+
 export default class AddCoursePopup extends Component {
   constructor (props) {
     super(props)
@@ -53,7 +55,7 @@ export default class AddCoursePopup extends Component {
     this.setState({
       isLoading: true
     })
-    setTimeout(() => {
+    setTimeout(async() => {
       if(this.validateFields()) {
         const newCourse = {
             dates: [
@@ -63,8 +65,11 @@ export default class AddCoursePopup extends Component {
             gmush: this.state.gmush,
             description: this.state.desc
         }
+
+        // Save to db
+        const addedCourse = await CoursesServerAPI.addCourse(newCourse)
+        if(addedCourse) this.props.handleAddCourse(addedCourse)
         
-        this.props.handleAddCourse(newCourse)
         this.props.handleClose()
       } else {
         this.setState({

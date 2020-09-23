@@ -41,11 +41,17 @@ export default function Courses() {
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
 
     useEffect(() => {
-        fetch("https://api.mocki.io/v1/07bc5d06")
-                .then(res => res.json())
-                .then(data => setCourseList(data))
-                .finally(() => setIsLoading(false))
-    }, [])
+        if(typeof profile !== 'undefined') {
+            fetch("http://localhost:5000/courses/")
+                    .then(res => res.json())
+                    .then(data => setCourseList(data))
+                    .finally(() => setIsLoading(false))
+        }
+        // fetch("https://api.mocki.io/v1/07bc5d06")
+        //         .then(res => res.json())
+        //         .then(data => setCourseList(data))
+        //         .finally(() => setIsLoading(false))
+    }, [profile])
 
   const addCourse = (newCourse) => {
     // Clear filters
