@@ -47,7 +47,7 @@ export default function CoursesDone() {
                 <div>
                     <h2 align="center" style={{paddingBottom:"50px"}}>Courses Done by {profile.name}</h2>
                     {
-                        typeof profile.courses === 'undefined' ?
+                        profile.courses.length === 0 ?
                         <h3 align="center" style={{paddingBottom:"120px"}}>You haven't done any course yet</h3> :
                         <Grid container
                               direction="row"

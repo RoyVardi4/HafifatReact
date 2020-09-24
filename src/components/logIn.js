@@ -11,6 +11,9 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
+// Server API
+import ProfileServeAPI from '../ServerAPI/profileServerAPI'
+
 // Context
 import { useMyProfileChange } from '../Context/myProfileContext' 
 
@@ -43,18 +46,30 @@ export default function Login(props) {
 
   const login = async(event) => {
     setIsLoading(true)
-    await fetch("https://api.mocki.io/v1/c3b8d833")
-            .then(res => res.json())
-            .then(data => {
-              setIsLoading(false)
-              const user = data.find((u) => u.personalNum === input.personalNumber)
-              if(user) {
-                closeLogIn()    
-                changeProfile(user)
-              } else {
-                alert("personal number does not exist")
-              }
-            })
+
+    const response = await ProfileServeAPI.getProfile(input.personalNumber)
+    let profile
+    switch(response.status) {
+      case 200:
+        profile = response.data
+        break;
+      case 404:
+        alert("Couldn't find the user")
+        break;
+      case 500: 
+        alert("Somthing went wrong :(")
+        break
+      default:
+    }
+
+    setIsLoading(false)
+    
+    if(profile) {
+      closeLogIn()    
+      changeProfile(profile)
+    } else {
+      alert("User does not exist")
+    }
   }
 
   return (

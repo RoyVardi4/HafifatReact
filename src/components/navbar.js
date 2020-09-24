@@ -17,6 +17,7 @@ import Alert from '@material-ui/lab/Alert';
 
 // Context 
 import { useMyProfile, useMyProfileChange } from '../Context/myProfileContext' 
+import { useMyCartRemoveAll } from '../Context/myCartContext'
 
 // Components
 import CoursesDone from '../Views/coursesDone'
@@ -48,9 +49,11 @@ export default function Navbar() {
   const [logInPopup, setLogInPopup] = useState(false) 
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [value, setValue] = useState(0);
+
   const location = useLocation()
   const profile = useMyProfile()
   const changeProfile = useMyProfileChange()
+  const removeAllCart = useMyCartRemoveAll()
 
   useEffect(() => {
     switch(location.pathname) {
@@ -79,6 +82,10 @@ export default function Navbar() {
   const signOut = () => {
     // set profile to null
     changeProfile()
+
+    // delete cart items
+    removeAllCart()
+    
     setIsSnackbarOpen(true)
   }
 

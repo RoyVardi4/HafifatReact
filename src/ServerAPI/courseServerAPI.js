@@ -10,8 +10,8 @@ export default class CourseServerAPI {
     }
 
     static async addCourseDate(dateToAdd, courseId) {
-        await axios.patch(URL+`/${courseId}`, {dateToAdd: dateToAdd})
-                        .then(res => console.log(res.data))
+       return await axios.patch(URL+`/${courseId}`, {dateToAdd: dateToAdd})
+                        .then(res => res.data)
                         .catch(err => alert(err))
     }
 

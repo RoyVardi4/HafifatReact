@@ -20,6 +20,9 @@ import Fab from '@material-ui/core/Fab';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import Grow from '@material-ui/core/Grow';
 
+// Server API
+import ProfileServerAPI from '../ServerAPI/profileServerAPI'
+
 // Context
 import { useMyCart, useMyCartRemove, useMyCartRemoveAll } from '../Context/myCartContext'
 import { useMyProfile, useMyProfileChange } from '../Context/myProfileContext'
@@ -66,10 +69,14 @@ export default function ShoppingCart(props) {
         removeFromCartList(courseToRemove)
     }
 
-    const addCartToProfile = () => {
+    const addCartToProfile = async() => {
         const newCourseList = myProfile.courses ? 
                                 [...myProfile.courses, ...cartList] : 
                                 cartList  
+
+        // save to db
+        await ProfileServerAPI.addCoursesToProfile(cartList, myProfile.personalNum)
+
         const newProfile = {
             ...myProfile,
             courses: newCourseList

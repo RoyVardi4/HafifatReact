@@ -37,7 +37,7 @@ const styles = makeStyles((theme) => ({
 
 export default function CourseItem(props) {
   const [isOpenPopup, setIsOpenPopup] = useState(false)
-  const [isChecked, setIsChecked] = useState(false)
+  const [isChecked, setIsChecked] = useState(true)
   const [isAddDatePopup, setIsAddDatePopup] = useState(false)
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
@@ -62,15 +62,17 @@ export default function CourseItem(props) {
     }
   };
 
-  const handleCloseAddDatePopup = (newDate) => () => {
+  const handleCloseAddDatePopup = (newDate) => async() => {
     // Check if is not null
     if(newDate){
       // Save to db
-      CoursesServerAPI.addCourseDate(newDate, props.course._id)
+      const addedDate = await CoursesServerAPI.addCourseDate(newDate, props.course._id)
+      if(addedDate) {
+        props.course.dates.push(addedDate)
+        setSnackbarMessage("Successfully added new date")
+        setIsSnackbarOpen(true)
+      }
 
-      props.course.dates.push(newDate)
-      setSnackbarMessage("Successfully added new date")
-      setIsSnackbarOpen(true)
     }
     setIsAddDatePopup(false);
   }
