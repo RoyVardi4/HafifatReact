@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react'
 
+// Context
 import {useMyProfile} from '../Context/myProfileContext'
+
+// ServerAPI
+import courseServerAPI from '../ServerAPI/courseServerAPI'
 
 import CourseList from './CourseList'
 import ShopingCart from './shopingCart'
@@ -42,15 +46,13 @@ export default function Courses() {
 
     useEffect(() => {
         if(typeof profile !== 'undefined') {
-            fetch("http://localhost:5000/courses/")
-                    .then(res => res.json())
-                    .then(data => setCourseList(data))
-                    .finally(() => setIsLoading(false))
+            const getAllCourses = async() => {
+                const data = await courseServerAPI.getAllCourses()
+                if(data) setCourseList(data)
+                setIsLoading(false)
+            }
+            getAllCourses()
         }
-        // fetch("https://api.mocki.io/v1/07bc5d06")
-        //         .then(res => res.json())
-        //         .then(data => setCourseList(data))
-        //         .finally(() => setIsLoading(false))
     }, [profile])
 
   const addCourse = (newCourse) => {

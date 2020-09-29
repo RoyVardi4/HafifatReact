@@ -32,6 +32,9 @@ export default function Login(props) {
   const changeProfile = useMyProfileChange()
   const [isLoading, setIsLoading] = useState(false)
   const [input, setInput] = useState({})
+  const [isWrongInput, setIsWrongInput] = useState(false)
+  const [wrongInputText, setWrongInputText] = useState("")
+
 
   const handleInputChange = (e) => setInput({
     ...input,
@@ -49,17 +52,18 @@ export default function Login(props) {
 
     const response = await ProfileServeAPI.getProfile(input.personalNumber)
     let profile
-    switch(response.status) {
+    switch (response.status) {
       case 200:
         profile = response.data
         break;
       case 404:
-        alert("Couldn't find the user")
+        setWrongInputText("Personal number does not exist")
         break;
-      case 500: 
-        alert("Somthing went wrong :(")
-        break
+      case 500:
+        setWrongInputText("Something went wrong :(")
+        break;
       default:
+        break;
     }
 
     setIsLoading(false)
@@ -68,7 +72,7 @@ export default function Login(props) {
       closeLogIn()    
       changeProfile(profile)
     } else {
-      alert("User does not exist")
+      setIsWrongInput(true)
     }
   }
 
@@ -88,7 +92,10 @@ export default function Login(props) {
               alignItems='center'
               justify="center">
                 <form>
-                  <TextField type="text"
+                  <TextField error={isWrongInput}
+                             helperText={isWrongInput ? wrongInputText : null}
+                             type="number"
+                             onFocus={() => setIsWrongInput(false)}
                              name="personalNumber"
                              onChange={handleInputChange} 
                              style={{align: "center"}}

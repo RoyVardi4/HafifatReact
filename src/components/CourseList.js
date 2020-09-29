@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     flexBasis: '25%',
   },
   dateHeading: {
-    flexBasis: '10%',
+    flexBasis: '22%',
   },
   noData: {
     color:"grey"
@@ -132,6 +132,9 @@ export default function ControlledAccordions(props) {
                 </Grid>
                 <Grid item className={classes.dateHeading}>
                   Next date
+                </Grid>
+                <Grid item >
+                  Number of courses: {getLengthDisplayed()}
                 </Grid>
             </Grid>
             

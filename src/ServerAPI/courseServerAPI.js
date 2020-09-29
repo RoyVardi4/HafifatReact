@@ -6,7 +6,9 @@ const URL = 'http://localhost:5000/courses'
 export default class CourseServerAPI {
 
     static async getAllCourses() {
-        // get all courses
+        return await axios.get(URL)
+                        .then(response => response.data)
+                        .catch(err => alert(err))
     }
 
     static async addCourseDate(dateToAdd, courseId) {

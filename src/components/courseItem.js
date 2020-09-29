@@ -14,6 +14,7 @@ import AddCourseDate from './addCourseDate';
 import EventIconDate from '@material-ui/icons/Event';
 import Snackbar from '@material-ui/core/Snackbar';
 import Alert from '@material-ui/lab/Alert';
+import Tooltip from '@material-ui/core/Tooltip';
 
 import CoursesServerAPI from '../ServerAPI/courseServerAPI'
 
@@ -41,6 +42,7 @@ export default function CourseItem(props) {
   const [isAddDatePopup, setIsAddDatePopup] = useState(false)
   const [isSnackbarOpen, setIsSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState("")
+  const [tooltipDisabledInfo, setTooltipDisabledInfo] = useState(false)
 
   const classes = styles();
 
@@ -95,6 +97,26 @@ export default function CourseItem(props) {
     setIsSnackbarOpen(false)
   }
 
+  const nextDate = () => {
+    const nextD = sortedDates().find((d, index) => index === 0)
+    return nextD ? nextD : "no next date" 
+  }
+
+  const sortedDates = () => { 
+    return filteredDates().sort((d1, d2) => {
+      const [day1, month1, year1] = d1.split('.')
+      const [day2, month2, year2] = d2.split('.')
+      return new Date(year1, month1, day1) - new Date(year2, month2, day2) 
+    })
+  }
+  
+  const filteredDates = () => {
+    return props.course.dates.filter((date) => {
+      const [day, month, year] = date.split('.')
+      return new Date() < new Date(year, month - 1, day)
+    })
+  }
+
   return (
         <Accordion expanded={props.expanded === props.course.name} 
                    onChange={props.expandChange(props.course.name)}>
@@ -102,16 +124,29 @@ export default function CourseItem(props) {
                 expandIcon={<ExpandMoreIcon />}
                 id={props.course.name}
             >
-                <FormControlLabel
-                    className={classes.titleData}
-                    onClick={(event) => event.stopPropagation()}
-                    control={<Checkbox onClick={() => moreDates()}    
-                                       checked={isChecked}/>}
-                    label={props.course.name}
-                />
+                  <FormControlLabel
+                      className={classes.titleData}
+                      onClick={(event) => event.stopPropagation()}
+                      control={
+                          <Tooltip arrow
+                                   placement="bottom" 
+                                   onClose={() => setTooltipDisabledInfo(false)}
+                                   onOpen={() => filteredDates().length === 0 && setTooltipDisabledInfo(true)}
+                                   open={tooltipDisabledInfo}
+                                   title="no available dates for this course">
+                            <span>
+                              <Checkbox onClick={() => moreDates()}    
+                                              checked={isChecked}
+                                              disabled={filteredDates().length === 0}
+                              />
+                            </span>
+                          </Tooltip>
+                        }
+                        label={props.course.name}
+                        />
                 <Typography className={classes.gmushData}>{props.course.gmush} hours</Typography>
                 <Typography className={classes.dateData}>
-                    {props.course.dates.filter((date, index) => index === 0) }
+                    {nextDate()}
                 </Typography>
                 <Typography onClick={(event) => event.stopPropagation()}>
                   <EventIconDate color="secondary" onClick={() => setIsAddDatePopup(true)} />
@@ -120,9 +155,9 @@ export default function CourseItem(props) {
                                 handleClose={handleCloseAddDatePopup}/>
                 </Typography>
                 
-
                 <DatesPopup 
                     open={isOpenPopup}
+                    sortedDates={sortedDates()}
                     handleClose={handleClosePopup}
                     course={props.course}/>
 
@@ -138,7 +173,6 @@ export default function CourseItem(props) {
             <AccordionDetails>
                 <Typography>{props.course.description}</Typography>
             </AccordionDetails>
-
         </Accordion>
   );
 }

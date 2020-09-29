@@ -40,14 +40,6 @@ export default function CourseDatesPopup(props) {
     event.stopPropagation()
   }
 
-  const sortedDates = () => {
-    return props.course.dates.sort((d1, d2) => {
-      const [day1, month1, year1] = d1.split('.')
-      const [day2, month2, year2] = d2.split('.')
-      return new Date(year1, month1, day1) - new Date(year2, month2, day2) 
-    })
-  }
-
   return (
     <div>
       <Dialog
@@ -67,7 +59,7 @@ export default function CourseDatesPopup(props) {
             }
           >
             {
-              sortedDates().map((date) => {
+              props.sortedDates.map((date) => {
                 return <ListItem key={date} button onClick={(event) => addCourseToCart(event, date)}>
                           <ListItemIcon>
                             <EventIconDate />

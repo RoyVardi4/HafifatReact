@@ -7,7 +7,7 @@ export default class CourseServerAPI {
 
     static async getProfile(personalNum) {
         return await axios.get(`${URL}${personalNum}`)
-                        .catch(err => err)
+                        .catch(err => err.response)
     }
 
     static async addCoursesToProfile(cartItems, personalNum) {
@@ -15,10 +15,4 @@ export default class CourseServerAPI {
                         .then(res => res.data)
                         .catch(err => alert(err))
     }
-
-    // static async addCourse(courseToAdd) {
-    //     return await axios.post(URL, {courseToAdd})
-    //                     .then(res => res.data)
-    //                     .catch(err => alert(err))
-    // }
 }
