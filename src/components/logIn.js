@@ -52,18 +52,22 @@ export default function Login(props) {
 
     const response = await ProfileServeAPI.getProfile(input.personalNumber)
     let profile
-    switch (response.status) {
-      case 200:
-        profile = response.data
-        break;
-      case 404:
-        setWrongInputText("Personal number does not exist")
-        break;
-      case 500:
-        setWrongInputText("Something went wrong :(")
-        break;
-      default:
-        break;
+    if(response) {
+      switch (response.status) {
+        case 200:
+          profile = response.data
+          break;
+        case 404:
+          setWrongInputText("Personal number does not exist")
+          break;
+        case 500:
+          setWrongInputText("Something went wrong :(")
+          break;
+        default:
+          break;
+      }
+    } else {
+      setWrongInputText("Server is not responding - Try again later")
     }
 
     setIsLoading(false)
