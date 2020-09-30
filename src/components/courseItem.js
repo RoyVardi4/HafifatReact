@@ -160,7 +160,7 @@ export default function CourseItem(props) {
                     sortedDates={sortedDates()}
                     handleClose={handleClosePopup}
                     course={props.course}/>
-
+                
                 <Snackbar open={isSnackbarOpen} autoHideDuration={4000} onClose={() => setIsSnackbarOpen(false)}>
                     <Alert onClose={closeSnackbar} severity="success">
                         {snackbarMessage}
