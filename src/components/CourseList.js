@@ -5,6 +5,7 @@ import CourseItem from './courseItem';
 import Fab from '@material-ui/core/Fab';
 import AddIcon from '@material-ui/icons/Add';
 import AddCoursePopup from './addCoursePopup'
+import Paper from '@material-ui/core/Paper'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -138,7 +139,9 @@ export default function ControlledAccordions(props) {
                 </Grid>
             </Grid>
             
-            {displayCourseList()}
+            <Paper style={{maxHeight: 320, backgroundColor:"#F5F5F5", overflow: 'auto'}}>
+              {displayCourseList()}
+            </Paper>
         </div>
       }
     </div>

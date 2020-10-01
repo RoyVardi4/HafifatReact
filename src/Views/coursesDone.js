@@ -8,6 +8,7 @@ import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank'
 import CheckBoxIcon from '@material-ui/icons/CheckBox'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import Devider from '@material-ui/core/Divider'
+import Paper from '@material-ui/core/Paper'
 
 // Context 
 import {useMyProfile} from '../Context/myProfileContext'
@@ -18,7 +19,7 @@ import PleaseLogin from '../components/pleaseLogin'
 const useStyles = makeStyles((theme) => ({
     list: {
       width: '100%',
-      minWidth: 400,
+      minWidth: 500,
       backgroundColor: theme.palette.background.paper,
     },
   }));
@@ -54,7 +55,11 @@ export default function CoursesDone() {
                               alignItems='center'
                               justify="center">
                             <Grid item >
-                                {profile.courses.map((course) => {
+                                <Paper style={{ maxHeight: 350, 
+                                                backgroundColor:"#F5F5F5",
+                                                overflow: 'auto'}}
+                                >
+                                {profile.courses.map((course, index) => {
                                     return <List key={course.name} className={classes.list}>
                                                 <ListItem>
                                                     <ListItemText primary={course.name}
@@ -70,9 +75,10 @@ export default function CoursesDone() {
                                                         }
                                                     </ListItemSecondaryAction>
                                                 </ListItem>
-                                                <Devider/>  
+                                                {index !== profile.courses.length - 1 && <Devider/>}  
                                             </List>
                                 })}
+                                </Paper>
                             </Grid>
                         </Grid>
                     }
