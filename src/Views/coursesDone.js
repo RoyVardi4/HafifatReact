@@ -60,7 +60,7 @@ export default function CoursesDone() {
                                                 overflow: 'auto'}}
                                 >
                                 {profile.courses.map((course, index) => {
-                                    return <List key={course.name} className={classes.list}>
+                                    return <List key={course._id} className={classes.list}>
                                                 <ListItem>
                                                     <ListItemText primary={course.name}
                                                                   secondary={course.selectedDate}
